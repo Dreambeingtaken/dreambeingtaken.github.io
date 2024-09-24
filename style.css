@@ -1,0 +1,97 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: black; /* Same as your portfolio */
+    color: white;
+    font-family: 'Poppins', sans-serif; /* Use Poppins */
+}
+
+#game {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the content horizontally */
+    justify-content: center; /* Center the content vertically */
+    text-align: center;
+    height: 100vh; /* Full height to help center vertically */
+}
+
+canvas {
+    border: 2px solid #fff;
+    display: block; /* Ensure there's no extra space below the canvas */
+    margin: 0 auto; /* Center the canvas */
+    max-width: 100%; /* Ensure responsiveness */
+    position: relative; /* Ensures it overlaps correctly */
+}
+
+/* Countdown style */
+#countdown {
+    font-size: 3rem;
+    color: #ffb7c5;
+}
+
+/* Power-up blue circle style */
+.blueCircle {
+    position: absolute;
+    border-radius: 50%;
+    background-color: blue;
+    width: 50px;
+    height: 50px;
+    z-index: 2; /* Ensures it stays above the red target */
+}
+
+/* Power-up green circle style */
+.greenCircle {
+    position: absolute;
+    border-radius: 50%;
+    background-color: green;
+    width: 75px;
+    height: 75px;
+    z-index: 2; /* Ensures it stays above the red target */
+}
+
+/* Button style from portfolio */
+.btn {
+    display: inline-block;
+    padding: 1rem 2.8rem;
+    background-color: black;
+    border-radius: 4rem;
+    font-size: 1.6rem;
+    color: #ffb7c5;
+    letter-spacing: 0.3rem;
+    font-weight: 600;
+    border: 2px solid #ffb7c5;
+    transition: 0.3s ease;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn:hover {
+    transform: scale(1.03);
+    background-color: #b74b4b;
+    color: black;
+    box-shadow: 0 0 25px #b74b4b;
+}
+
+/* Timer style */
+#timer {
+    font-size: 24px;
+    margin-top: 10px;
+    color: #ffb7c5; /* Same color for consistency */
+}
+
+/* Style for the jumpscare video */
+#jumpscareVideo {
+    display: none;
+    width: 100%; /* Match canvas width */
+    height: 100%; /* Match canvas height */
+    position: absolute;
+    z-index: 10; /* Ensures the video covers everything */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Offset to ensure center */
+    pointer-events: none; /* Disable interactions with the video */
+    border: 2px solid black; /* Optional: Add a border */
+}
+

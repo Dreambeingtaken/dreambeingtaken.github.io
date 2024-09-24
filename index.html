@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝓙𝓮𝓷𝓲'𝓼 𝓟𝓸𝓹 𝓖𝓪𝓶𝓮</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game">
+        <h1>𝓙𝓮𝓷𝓲'𝓼 𝓟𝓸𝓹 𝓖𝓪𝓶𝓮 - try to pass past score 10</h1>
+        <input type="text" id="usernameInput" placeholder="Enter your username" class="btn">
+        <button id="startGameButton" class="btn">Start Game</button>
+        <canvas id="gameCanvas" width="800" height="600" style="display:none;"></canvas>
+        <div id="scoreboard" style="display:none;">
+            <h2>Scoreboard</h2>
+            <div id="scores"></div>
+        </div>
+        <div id="score">Score: 0</div>
+        <div id="timer">Time Left: 200s</div>
+        <button id="restartButton" class="btn" style="display:none;">Restart Game</button>
+        <button id="playButton" class="btn">Play Music</button>
+        <button id="pauseButton" class="btn">Pause Music</button>
+        <a href="https://jenifaurora.github.io" class="btn">Back to Website</a>
+    </div>
+
+    <!-- Jumpscare video container (hidden initially) -->
+    <video id="jumpscareVideo" width="800" height="600" style="display:none;" autoplay>
+        <source src="video/foxy.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
+    <!-- Music audio -->
+    <audio id="lofiAudio" loop>
+        <source src="audio/lofi.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <!-- Hit sound audio -->
+    <audio id="hitSound" src="sounds/hit.mp3" preload="auto"></audio>
+    
+    <!-- Jumpscare sound -->
+    <audio id="jumpscareSound" src="sounds/jumpscare.mp3" preload="auto"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
