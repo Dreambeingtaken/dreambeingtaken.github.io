@@ -1,57 +1,64 @@
+/* General Body Styling */
 body {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: black; /* Same as your portfolio */
+    background-color: black; /* Matches the portfolio */
     color: white;
-    font-family: 'Poppins', sans-serif; /* Use Poppins */
+    font-family: 'Poppins', sans-serif; /* Use Poppins font */
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Ensures no scroll bars */
 }
 
+/* Game Container */
 #game {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center the content horizontally */
-    justify-content: center; /* Center the content vertically */
+    align-items: center; /* Center content horizontally */
+    justify-content: center; /* Center content vertically */
     text-align: center;
-    height: 100vh; /* Full height to help center vertically */
+    height: 100vh; /* Full height for vertical centering */
+    position: relative; /* For absolute positioning of elements inside */
 }
 
+/* Canvas Styling */
 canvas {
     border: 2px solid #fff;
-    display: block; /* Ensure there's no extra space below the canvas */
+    display: block; /* Ensure no extra space below the canvas */
     margin: 0 auto; /* Center the canvas */
     max-width: 100%; /* Ensure responsiveness */
     position: relative; /* Ensures it overlaps correctly */
 }
 
-/* Countdown style */
+/* Countdown Style */
 #countdown {
     font-size: 3rem;
     color: #ffb7c5;
 }
 
-/* Power-up blue circle style */
+/* Power-up Blue Circle */
 .blueCircle {
     position: absolute;
     border-radius: 50%;
     background-color: blue;
     width: 50px;
     height: 50px;
-    z-index: 2; /* Ensures it stays above the red target */
+    z-index: 2; /* Ensure it stays above the red target */
 }
 
-/* Power-up green circle style */
+/* Power-up Green Circle */
 .greenCircle {
     position: absolute;
     border-radius: 50%;
     background-color: green;
     width: 75px;
     height: 75px;
-    z-index: 2; /* Ensures it stays above the red target */
+    z-index: 2; /* Ensure it stays above the red target */
 }
 
-/* Button style from portfolio */
+/* Button Style (same as your portfolio) */
 .btn {
     display: inline-block;
     padding: 1rem 2.8rem;
@@ -74,24 +81,52 @@ canvas {
     box-shadow: 0 0 25px #b74b4b;
 }
 
-/* Timer style */
-#timer {
-    font-size: 24px;
+/* Score and Timer Styling */
+#score, #timer {
+    font-size: 1.5rem;
     margin-top: 10px;
-    color: #ffb7c5; /* Same color for consistency */
+    color: #ffb7c5; /* Matches your overall color theme */
 }
 
-/* Style for the jumpscare video */
+/* Jumpscare Video Styling */
 #jumpscareVideo {
     display: none;
     width: 100%; /* Match canvas width */
     height: 100%; /* Match canvas height */
     position: absolute;
-    z-index: 10; /* Ensures the video covers everything */
+    z-index: 10; /* Ensures video covers everything */
     top: 50%; /* Center vertically */
     left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Offset to ensure center */
-    pointer-events: none; /* Disable interactions with the video */
-    border: 2px solid black; /* Optional: Add a border */
+    transform: translate(-50%, -50%); /* Ensures it’s centered */
+    pointer-events: none; /* Disables interaction with the video */
+    border: 2px solid black; /* Optional border for video */
 }
 
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    body, #game {
+        height: 100%;
+    }
+
+    canvas {
+        width: 90vw; /* Make canvas width responsive */
+        height: 60vh; /* Adjust canvas height */
+    }
+
+    h1 {
+        font-size: 1.5em; /* Smaller font size for mobile */
+    }
+
+    #countdown {
+        font-size: 2.5rem; /* Adjust countdown size for smaller screens */
+    }
+
+    .btn {
+        font-size: 1.4rem; /* Adjust button size for mobile */
+        padding: 0.8rem 2rem; /* Smaller padding for mobile */
+    }
+
+    #score, #timer {
+        font-size: 1.2rem; /* Adjust score/timer size */
+    }
+}
