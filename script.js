@@ -1,6 +1,22 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+function resizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+function getCanvasSize() {
+    const rect = canvas.getBoundingClientRect();
+    return { w: rect.width, h: rect.height };
+}
+
+
+
 let score = 0;
 let timeLeft = 200; // Time limit in seconds
 let gameInterval;
@@ -8,10 +24,11 @@ let targetSpeed = 1.5; // Initial speed of the red target
 let targetDirection = { x: 1, y: 1 }; // Direction for target movement
 
 const target = {
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
+    x: 0,
+    y: 0,
     radius: 25
 };
+
 
 const blueCircle = {
     x: 0,
@@ -34,17 +51,14 @@ const hitSound = new Audio('sounds/hit.mp3');  // Path to your hit sound effect
 const backgroundMusic = document.getElementById('lofiAudio');  // Background music element
 
 // Create a jumpscare video element
-const jumpscareVideo = document.createElement('video');
-jumpscareVideo.src = 'jumpscare/foxy.mp4'; // Path to jumpscare video
-jumpscareVideo.style.position = 'fixed'; // Use fixed positioning
-jumpscareVideo.style.top = '0'; // Align to top
-jumpscareVideo.style.left = '0'; // Align to left
-jumpscareVideo.style.width = '100vw'; // Full viewport width
-jumpscareVideo.style.height = '100vh'; // Full viewport height
-jumpscareVideo.style.objectFit = 'cover'; // Cover the entire viewport
-jumpscareVideo.style.display = 'none';  // Initially hidden
-jumpscareVideo.style.zIndex = '10'; // Ensure it is on top of canvas
-document.body.appendChild(jumpscareVideo); // Add video to the body
+const jumpscareVideo = document.getElementById('jumpscareVideo');
+const jumpscareSound = document.getElementById("jumpscareSound");
+const whisperAudio = document.getElementById("whisperAudio");
+
+jumpscareVideo.src = 'jumpscare/foxy.mp4';
+jumpscareVideo.style.display = 'none';
+
+
 
 // Scoreboard
 let username = '';
@@ -66,7 +80,7 @@ function startGameHandler() {
         
         startGame();
     } else {
-        alert('Please enter a username!');
+        
     }
 }
 
@@ -129,58 +143,80 @@ function drawTimer() {
 }
 
 function resetTarget() {
-    target.x = Math.random() * (canvas.width - target.radius * 2) + target.radius;
-    target.y = Math.random() * (canvas.height - target.radius * 2) + target.radius;
+    const size = getCanvasSize();
+
+    target.x = Math.random() * (size.w - target.radius * 2) + target.radius;
+    target.y = Math.random() * (size.h - target.radius * 2) + target.radius;
 }
 
+
 function moveTarget() {
+    const size = getCanvasSize();
+
     target.x += targetSpeed * targetDirection.x;
     target.y += targetSpeed * targetDirection.y;
 
-    // Reverse direction if the target hits the canvas boundaries
-    if (target.x - target.radius < 0 || target.x + target.radius > canvas.width) {
+    if (target.x - target.radius < 0 || target.x + target.radius > size.w) {
         targetDirection.x *= -1;
     }
-    if (target.y - target.radius < 0 || target.y + target.radius > canvas.height) {
+
+    if (target.y - target.radius < 0 || target.y + target.radius > size.h) {
         targetDirection.y *= -1;
     }
 }
 
-function moveBlueCircle() {
-    if (blueCircle.active) {
-        blueCircle.x += blueCircle.speed * (Math.random() < 0.5 ? 1 : -1);
-        blueCircle.y += blueCircle.speed * (Math.random() < 0.5 ? 1 : -1);
 
-        // Prevent blue circle from moving out of bounds
-        if (blueCircle.x - blueCircle.radius < 0 || blueCircle.x + blueCircle.radius > canvas.width) {
-            blueCircle.x = blueCircle.radius + Math.random() * (canvas.width - 2 * blueCircle.radius);
-        }
-        if (blueCircle.y - blueCircle.radius < 0 || blueCircle.y + blueCircle.radius > canvas.height) {
-            blueCircle.y = blueCircle.radius + Math.random() * (canvas.height - 2 * blueCircle.radius);
-        }
+function moveBlueCircle() {
+    if (!blueCircle.active) return;
+
+    const size = getCanvasSize();
+
+    blueCircle.x += blueCircle.speed * (Math.random() < 0.5 ? 1 : -1);
+    blueCircle.y += blueCircle.speed * (Math.random() < 0.5 ? 1 : -1);
+
+    if (blueCircle.x - blueCircle.radius < 0 || blueCircle.x + blueCircle.radius > size.w) {
+        blueCircle.x = blueCircle.radius + Math.random() * (size.w - 2 * blueCircle.radius);
+    }
+
+    if (blueCircle.y - blueCircle.radius < 0 || blueCircle.y + blueCircle.radius > size.h) {
+        blueCircle.y = blueCircle.radius + Math.random() * (size.h - 2 * blueCircle.radius);
     }
 }
+
 
 function moveGreenCircle() {
-    if (greenCircle.active) {
-        // If greenCircle is in chasing mode, make it chase the red target
-        if (greenCircle.chasing) {
-            const dx = target.x - greenCircle.x;
-            const dy = target.y - greenCircle.y;
-            const distance = Math.hypot(dx, dy);
-            
-            // Ensure the green circle only moves if it is not already at the target position
-            if (distance > 1) { // A small threshold to avoid jittering when close to the target
-                greenCircle.x += (greenCircle.speed * dx) / distance;
-                greenCircle.y += (greenCircle.speed * dy) / distance;
-            }
-        } else {
-            // Move greenCircle randomly when not chasing
-            greenCircle.x += greenCircle.speed * (Math.random() < 0.5 ? 1 : -1);
-            greenCircle.y += greenCircle.speed * (Math.random() < 0.5 ? 1 : -1);
+    if (!greenCircle.active) return;
+
+    const size = getCanvasSize();
+
+    if (greenCircle.chasing) {
+        const dx = target.x - greenCircle.x;
+        const dy = target.y - greenCircle.y;
+        const distance = Math.hypot(dx, dy);
+
+        if (distance > 1) {
+            greenCircle.x += (greenCircle.speed * dx) / distance;
+            greenCircle.y += (greenCircle.speed * dy) / distance;
         }
+    } else {
+        greenCircle.x += greenCircle.speed * (Math.random() < 0.5 ? 1 : -1);
+        greenCircle.y += greenCircle.speed * (Math.random() < 0.5 ? 1 : -1);
     }
+
+    // Keep inside canvas
+    if (greenCircle.x - greenCircle.radius < 0)
+        greenCircle.x = greenCircle.radius;
+
+    if (greenCircle.x + greenCircle.radius > size.w)
+        greenCircle.x = size.w - greenCircle.radius;
+
+    if (greenCircle.y - greenCircle.radius < 0)
+        greenCircle.y = greenCircle.radius;
+
+    if (greenCircle.y + greenCircle.radius > size.h)
+        greenCircle.y = size.h - greenCircle.radius;
 }
+
 
 function checkHit(mouseX, mouseY) {
     const distance = Math.hypot(mouseX - target.x, mouseY - target.y);
@@ -235,16 +271,22 @@ function checkHit(mouseX, mouseY) {
 }
 
 function activateBlueCircle() {
+    const size = getCanvasSize();
+
     blueCircle.active = true;
-    blueCircle.x = Math.random() * (canvas.width - blueCircle.radius * 2) + blueCircle.radius;
-    blueCircle.y = Math.random() * (canvas.height - blueCircle.radius * 2) + blueCircle.radius;
+    blueCircle.x = Math.random() * (size.w - blueCircle.radius * 2) + blueCircle.radius;
+    blueCircle.y = Math.random() * (size.h - blueCircle.radius * 2) + blueCircle.radius;
 }
 
+
 function activateGreenCircle() {
+    const size = getCanvasSize();
+
     greenCircle.active = true;
-    greenCircle.x = Math.random() * (canvas.width - greenCircle.radius * 2) + greenCircle.radius;
-    greenCircle.y = Math.random() * (canvas.height - greenCircle.radius * 2) + greenCircle.radius;
+    greenCircle.x = Math.random() * (size.w - greenCircle.radius * 2) + greenCircle.radius;
+    greenCircle.y = Math.random() * (size.h - greenCircle.radius * 2) + greenCircle.radius;
 }
+
 
 function deactivateGreenCircle() {
     greenCircle.active = false;
@@ -252,20 +294,41 @@ function deactivateGreenCircle() {
 }
 
 function playJumpScare() {
-    jumpscareVideo.style.display = 'block'; // Show the jumpscare video
-    jumpscareVideo.play();
-    jumpscareVideo.onended = endGame; // End the game after the video ends
+    whisperAudio.volume = 0.3;
+whisperAudio.currentTime = 0;
+whisperAudio.play().catch(e => console.log(e));
+
+    clearInterval(gameInterval);
+
+    document.getElementById("gameCanvas").style.display = "none";
+    document.getElementById("scoreboard").style.display = "none";
+      
+    document.getElementById("riddleScreen").style.display = "flex";
+    document.getElementById("riddleResult").style.display = "none";
+document.getElementById("riddleInput").value = "";
+
 }
 
+
+
+
+
 function endGame() {
-    clearInterval(gameInterval);
-    jumpscareVideo.style.display = 'none'; // Hide the jumpscare video
-    alert('Game Over L Bozo! Your final score is: ' + score);
-    document.getElementById('gameCanvas').style.display = 'none'; // Hide the canvas
-    document.getElementById('scoreboard').style.display = 'none'; // Hide scoreboard
-    document.getElementById('startGameButton').style.display = 'block'; // Show start button again
+    jumpscareVideo.onended = null;
+    jumpscareVideo.pause();
+    jumpscareVideo.style.display = "none";
+
+    document.getElementById("score").innerText =
+        "GAME OVER — Final Score: " + score;
+
+    document.getElementById('gameCanvas').style.display = 'none';
+    document.getElementById('scoreboard').style.display = 'none';
+    document.getElementById('startGameButton').style.display = 'block';
+
     resetGame();
 }
+
+
 
 function resetGame() {
     score = 0;
@@ -280,8 +343,12 @@ function resetGame() {
 }
 
 function startGame() {
+    resizeCanvas();
+    resetTarget();     // <<< ADD THIS LINE
     drawScore();
     drawTimer();
+
+
     gameInterval = setInterval(() => {
         ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
         moveTarget();
@@ -300,23 +367,72 @@ function startGame() {
     }, 1000 / 60); // 60 frames per second
 }
 
-// Event listeners for mouse clicks
 canvas.addEventListener('click', (event) => {
     const rect = canvas.getBoundingClientRect();
+
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
+
     checkHit(mouseX, mouseY);
 });
 
-// Event listeners for touch events on mobile devices
+
 canvas.addEventListener('touchstart', (event) => {
-    event.preventDefault(); // Prevent default touch actions
-    const touch = event.touches[0];
+    event.preventDefault();
+
     const rect = canvas.getBoundingClientRect();
+    const touch = event.changedTouches[0];
+
     const mouseX = touch.clientX - rect.left;
     const mouseY = touch.clientY - rect.top;
+
     checkHit(mouseX, mouseY);
-});
+}, { passive: false });
+
+
 
 document.getElementById('gameCanvas').style.display = 'none'; // Initially hide the game canvas
 document.getElementById('scoreboard').style.display = 'none'; // Initially hide the scoreboard
+window.addEventListener('resize', () => {
+    resizeCanvas();
+    resetTarget();
+});
+document.getElementById("riddleSubmit").addEventListener("click", () => {
+
+    const result = document.getElementById("riddleResult");
+
+result.style.display = "block";
+result.innerText =
+    "WRONG. JENI DESPISES YOU. YOUR WISDOM IS NOT WORTHY OF THE ORDER.";
+    result.style.animation = "subtleShake 0.4s ease-in-out";
+
+
+setTimeout(() => {
+
+    // Show prophecy hint
+    result.innerText += "\n\nRemember this. Once the sun sets, Carnival will rise. You will understand in few years.";
+
+    // Allow browser ONE frame to render text
+    setTimeout(() => {
+
+        document.getElementById("riddleScreen").style.display = "none";
+        whisperAudio.pause();
+whisperAudio.currentTime = 0;
+
+
+        jumpscareVideo.style.display = "block";
+        jumpscareVideo.currentTime = 0;
+        jumpscareVideo.muted = false;
+        jumpscareVideo.volume = 1;
+
+        jumpscareVideo.play().catch(e => console.log(e));
+        jumpscareVideo.onended = endGame;
+
+    }, 4000);
+
+}, 3000);
+
+
+});
+
+
