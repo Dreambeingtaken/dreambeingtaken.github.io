@@ -24,11 +24,42 @@
         <a href="https://jenifaurora.github.io" class="btn">Back to Website</a>
     </div>
 
-    <!-- Jumpscare video container (hidden initially) -->
-    <video id="jumpscareVideo" width="800" height="600" style="display:none;" autoplay>
-        <source src="video/foxy.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+<!-- Jumpscare video -->
+<video id="jumpscareVideo" playsinline webkit-playsinline preload="auto">
+    <source src="jumpscare/foxy.mp4" type="video/mp4">
+</video>
+
+<!-- Riddle Screen -->
+<div id="riddleScreen">
+    <div id="riddleBox">
+        <h2>☠ You touched the Poison Orb. You got 10 minutes ☠</h2>
+
+        <p>
+        In the age of shattered crowns,<br>
+        when knight and shadow walk as one,<br>
+        a prophecy was carved into stone.
+        </p>
+
+        <p>
+        <strong>
+        I am born when steel meets fate,<br>
+        I die when courage breaks.<br>
+        Kings fear me. Beggars wield me.<br>
+        I travel without feet,<br>
+        strike without hands,<br>
+        and only the worthy may command me.
+        </strong>
+        </p>
+
+        <p><strong>WHAT AM I?</strong></p>
+
+        <input id="riddleInput" placeholder="Speak, mortal..." />
+
+        <button id="riddleSubmit">Submit Answer</button>
+
+        <p id="riddleResult"></p>
+    </div>
+</div>
     
     <!-- Music audio -->
     <audio id="lofiAudio" loop>
@@ -41,6 +72,7 @@
     
     <!-- Jumpscare sound -->
     <audio id="jumpscareSound" src="sounds/jumpscare.mp3" preload="auto"></audio>
+    <audio id="whisperAudio" src="sounds/whisper.mp3" preload="auto" loop></audio>
 
     <script src="script.js"></script>
 </body>
