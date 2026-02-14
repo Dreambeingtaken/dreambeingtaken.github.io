@@ -30,6 +30,8 @@ canvas {
     margin: 0 auto; /* Center the canvas */
     max-width: 100%; /* Ensure responsiveness */
     position: relative; /* Ensures it overlaps correctly */
+    touch-action: none;
+
 }
 
 /* Countdown Style */
@@ -91,16 +93,16 @@ canvas {
 /* Jumpscare Video Styling */
 #jumpscareVideo {
     display: none;
-    width: 100%; /* Match canvas width */
-    height: 100%; /* Match canvas height */
-    position: absolute;
-    z-index: 10; /* Ensures video covers everything */
-    top: 50%; /* Center vertically */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Ensures it’s centered */
-    pointer-events: none; /* Disables interaction with the video */
-    border: 2px solid black; /* Optional border for video */
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: contain;
+    z-index: 9999;
+    background: black;
 }
+
+
 
 /* Mobile Responsiveness */
 @media (max-width: 600px) {
@@ -129,4 +131,55 @@ canvas {
     #score, #timer {
         font-size: 1.2rem; /* Adjust score/timer size */
     }
+}
+#riddleScreen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: black;
+    color: #ffb7c5;
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#riddleBox {
+    text-align: center;
+    max-width: 90vw;
+    font-size: 1rem;
+}
+
+#riddleBox h2 {
+    margin-bottom: 10px;
+}
+
+#riddleInput {
+    width: 90%;
+    padding: 10px;
+    margin-top: 15px;
+    font-size: 1rem;
+}
+
+#riddleSubmit {
+    margin-top: 10px;
+    padding: 10px 20px;
+}
+#riddleResult {
+    display: none;
+    margin-top: 15px;
+    color: #ff4b4b;
+    font-weight: bold;
+    white-space: pre-line;
+}
+
+#riddleResult {
+    white-space: pre-line;
+}
+@keyframes subtleShake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    50% { transform: translateX(2px); }
+    75% { transform: translateX(-2px); }
+    100% { transform: translateX(0); }
 }
