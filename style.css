@@ -1,185 +1,430 @@
-/* General Body Styling */
+/* Jeni's Pop Game — dark midway / old-browser arcade styling */
+:root {
+    color-scheme: dark;
+    --ink: #030303;
+    --paper: #e5dfe0;
+    --muted: #b8adaf;
+    --rose: #dba0a8;
+    --rose-light: #f0c4c8;
+    --blood: #e1262e;
+    --line: rgba(153, 49, 59, .56);
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html { min-height: 100%; background: var(--ink); }
+
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: black; /* Matches the portfolio */
-    color: white;
-    font-family: 'Poppins', sans-serif; /* Use Poppins font */
+    min-height: 100vh;
     margin: 0;
-    padding: 0;
-    overflow: hidden; /* Ensures no scroll bars */
+    padding: 22px 28px 30px;
+    overflow-x: hidden;
+    color: var(--paper);
+    background:
+        radial-gradient(ellipse at 50% 42%, rgba(54, 11, 18, .16), transparent 54%),
+        radial-gradient(ellipse at center, transparent 37%, rgba(0, 0, 0, .78) 100%),
+        #050404;
+    font-family: Georgia, "Times New Roman", serif;
 }
 
-/* Game Container */
-#game {
+button, input, select { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+
+.game-shell {
+    position: relative;
+    width: min(100%, 1040px);
+    margin: 0 auto;
+}
+
+.topbar {
     display: flex;
-    flex-direction: column;
-    align-items: center; /* Center content horizontally */
-    justify-content: center; /* Center content vertically */
+    align-items: center;
+    justify-content: space-between;
+    min-height: 42px;
+    padding: 0 2px 13px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(153, 49, 59, .38);
+}
+
+.brand {
+    color: var(--rose-light);
+    font: bold 1.18rem Georgia, "Times New Roman", serif;
+    letter-spacing: -.035em;
+    text-decoration: none;
+}
+.brand span { color: #fff; }
+.back-link {
+    color: #bcb2b3;
+    font: .84rem Arial, Helvetica, sans-serif;
+    text-decoration: none;
+}
+.back-link:hover { color: var(--rose-light); }
+.back-link span { margin-left: 5px; color: var(--rose); }
+
+.panel {
+    position: relative;
+    width: 100%;
+    padding: clamp(24px, 4vw, 43px) clamp(16px, 4vw, 42px) 30px;
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    background: rgba(5, 3, 4, .54);
+    box-shadow: none;
     text-align: center;
-    height: 100vh; /* Full height for vertical centering */
-    position: relative; /* For absolute positioning of elements inside */
+}
+.start-panel { max-width: 900px; margin: 0 auto; }
+
+h1, h2, p { margin-top: 0; }
+h1, .game-over-panel h2, .pause-card h2, .riddle-box h2 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 700;
+    letter-spacing: -.035em;
 }
 
-/* Canvas Styling */
-canvas {
-    border: 2px solid #fff;
-    display: block; /* Ensure no extra space below the canvas */
-    margin: 0 auto; /* Center the canvas */
-    max-width: 100%; /* Ensure responsiveness */
-    position: relative; /* Ensures it overlaps correctly */
-    touch-action: none;
-
+h1 {
+    margin: 0;
+    color: #f0e9e9;
+    font-size: clamp(2.7rem, 7vw, 5rem);
+    line-height: 1.05;
+}
+h1 span { color: var(--rose-light); font-style: italic; }
+.lead {
+    margin: 18px 0 9px;
+    color: #eee7e7;
+    font: bold clamp(1rem, 2vw, 1.16rem) Georgia, "Times New Roman", serif;
+}
+.intro-copy {
+    max-width: 560px;
+    margin: 0 auto;
+    color: #bdb3b4;
+    font: .94rem/1.7 Georgia, "Times New Roman", serif;
 }
 
-/* Countdown Style */
-#countdown {
-    font-size: 3rem;
-    color: #ffb7c5;
+.setup-form {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-width: 720px;
+    margin: 24px auto 0;
 }
-
-/* Power-up Blue Circle */
-.blueCircle {
-    position: absolute;
-    border-radius: 50%;
-    background-color: blue;
-    width: 50px;
-    height: 50px;
-    z-index: 2; /* Ensure it stays above the red target */
+.setup-form input, .setup-form select, .riddle-form input {
+    min-width: 0;
+    min-height: 44px;
+    padding: 0 13px;
+    border: 1px solid #70545a;
+    border-radius: 2px;
+    outline: none;
+    color: #f0e9e9;
+    background: rgba(5, 3, 4, .88);
+    font: .9rem Arial, Helvetica, sans-serif;
+    box-shadow: none;
 }
-
-/* Power-up Green Circle */
-.greenCircle {
-    position: absolute;
-    border-radius: 50%;
-    background-color: green;
-    width: 75px;
-    height: 75px;
-    z-index: 2; /* Ensure it stays above the red target */
+.setup-form input { flex: 1 1 210px; max-width: 300px; }
+.setup-form select { flex: 0 1 145px; color-scheme: dark; }
+.setup-form input:focus, .setup-form select:focus, .riddle-form input:focus {
+    border-color: var(--rose-light);
+    outline: 1px solid rgba(219, 160, 168, .3);
+    outline-offset: 1px;
+    box-shadow: none;
 }
+.setup-form input::placeholder, .riddle-form input::placeholder { color: #95898b; }
 
-/* Button Style (same as your portfolio) */
 .btn {
-    display: inline-block;
-    padding: 1rem 2.8rem;
-    background-color: black;
-    border-radius: 4rem;
-    font-size: 1.6rem;
-    color: #ffb7c5;
-    letter-spacing: 0.3rem;
-    font-weight: 600;
-    border: 2px solid #ffb7c5;
-    transition: 0.3s ease;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 0 17px;
+    border: 1px solid #a66c75;
+    border-radius: 2px;
+    color: #e9c0c5;
+    background: #10090b;
+    font: bold .86rem Arial, Helvetica, sans-serif;
     cursor: pointer;
-    margin-top: 10px;
+    transition: background-color .12s ease, color .12s ease, border-color .12s ease;
 }
-
 .btn:hover {
-    transform: scale(1.03);
-    background-color: #b74b4b;
-    color: black;
-    box-shadow: 0 0 25px #b74b4b;
+    color: #fff;
+    background: #351018;
+    border-color: #d19aa2;
+    box-shadow: none;
+    transform: none;
 }
+.btn:active { background: #5b1721; }
+.primary-btn { color: #17090c; background: #d6a0a8; border-color: #d6a0a8; }
+.primary-btn:hover { color: #090506; background: #f0c4c8; border-color: #f0c4c8; }
+.primary-btn:disabled { opacity: .55; cursor: wait; }
+.secondary-btn { min-height: 36px; padding: 0 13px; font-size: .8rem; }
+.form-message { min-height: 1.2rem; margin: 10px 0 0; color: #f0a9b0; font: .82rem Arial, Helvetica, sans-serif; }
 
-/* Score and Timer Styling */
-#score, #timer {
-    font-size: 1.5rem;
-    margin-top: 10px;
-    color: #ffb7c5; /* Matches your overall color theme */
+.leaderboard {
+    max-width: 510px;
+    margin: 28px auto 0;
+    padding-top: 15px;
+    border-top: 1px solid rgba(153, 49, 59, .42);
+    text-align: left;
 }
+.leaderboard-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.leaderboard-heading h2 { margin: 0; color: #eee5e5; font: bold 1rem Georgia, "Times New Roman", serif; }
+.leaderboard-heading span { color: #8f8284; font: .7rem Arial, Helvetica, sans-serif; }
+.high-score-list { display: grid; gap: 0; margin: 12px 0 0; padding: 0; list-style: none; }
+.high-score-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 8px 2px;
+    border-bottom: 1px dotted rgba(153, 49, 59, .28);
+    color: #d7cecf;
+    background: transparent;
+    font: .82rem Arial, Helvetica, sans-serif;
+}
+.high-score-list li strong { color: var(--rose-light); font: bold .9rem Georgia, "Times New Roman", serif; }
+.high-score-list .empty-score { color: #96898b; justify-content: center; border-bottom: 0; }
 
-/* Jumpscare Video Styling */
+.play-panel { width: 100%; }
+.game-hud {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 9px;
+    border-top: 1px solid rgba(153, 49, 59, .42);
+    border-bottom: 1px solid rgba(153, 49, 59, .42);
+}
+.stat-card {
+    display: flex;
+    min-height: 57px;
+    flex: 1 1 0;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    padding: 7px 12px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+}
+.stat-label { color: #a79a9c; font: bold .62rem Arial, Helvetica, sans-serif; letter-spacing: .1em; }
+.stat-card strong { color: #f2eaea; font: bold 1.45rem Georgia, "Times New Roman", serif; font-variant-numeric: tabular-nums; }
+.stat-card strong span { margin-left: 2px; color: var(--rose-light); font-size: .8rem; }
+.timer-card strong { color: var(--rose-light); }
+
+.canvas-frame {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #4d3439;
+    border-radius: 0;
+    background: #030303;
+    box-shadow: none;
+}
+#gameCanvas {
+    display: block;
+    width: 100%;
+    height: clamp(310px, 57vh, 560px);
+    touch-action: none;
+    cursor: crosshair;
+}
+.paused-overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(0, 0, 0, .84);
+}
+.pause-card { padding: 22px; text-align: center; }
+.pause-card h2 { margin: 0 0 20px; color: #eee4e4; font-size: clamp(2.5rem, 6vw, 4rem); }
+.pause-card h2 span, .game-over-panel h2 span { color: var(--rose-light); }
+
+.game-bottom-row { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-top: 11px; }
+.game-status { margin: 0; color: #b9adaf; font: .8rem/1.5 Arial, Helvetica, sans-serif; }
+.game-actions { display: flex; flex: 0 0 auto; gap: 7px; }
+.text-button { padding: 4px 2px; border: 0; color: var(--rose-light); background: transparent; font: .82rem Arial, Helvetica, sans-serif; cursor: pointer; }
+.text-button:hover { color: #fff; text-decoration: underline; }
+
+.game-over-panel { max-width: 700px; margin: 0 auto; }
+.game-over-panel h2 { margin: 0; color: #f0e8e8; font-size: clamp(2.9rem, 7vw, 5rem); }
+.final-score-wrap { display: grid; gap: 5px; margin: 24px auto; }
+.final-score-wrap > span { color: #b29fa3; font: bold .68rem Arial, Helvetica, sans-serif; letter-spacing: .12em; }
+.final-score-wrap strong { color: var(--rose-light); font: bold clamp(3rem, 9vw, 5.5rem) Georgia, "Times New Roman", serif; }
+.final-score-wrap p { min-height: 1.2rem; margin: 0; color: #cfc2c4; font: .84rem Arial, Helvetica, sans-serif; }
+.menu-button { display: block; margin: 15px auto 0; }
+
 #jumpscareVideo {
     display: none;
     position: fixed;
     inset: 0;
+    z-index: 9999;
     width: 100vw;
     height: 100vh;
     object-fit: contain;
-    z-index: 9999;
-    background: black;
+    background: #000;
 }
 
-
-
-/* Mobile Responsiveness */
-@media (max-width: 600px) {
-    body, #game {
-        height: 100%;
-    }
-
-    canvas {
-        width: 90vw; /* Make canvas width responsive */
-        height: 60vh; /* Adjust canvas height */
-    }
-
-    h1 {
-        font-size: 1.5em; /* Smaller font size for mobile */
-    }
-
-    #countdown {
-        font-size: 2.5rem; /* Adjust countdown size for smaller screens */
-    }
-
-    .btn {
-        font-size: 1.4rem; /* Adjust button size for mobile */
-        padding: 0.8rem 2rem; /* Smaller padding for mobile */
-    }
-
-    #score, #timer {
-        font-size: 1.2rem; /* Adjust score/timer size */
-    }
-}
-#riddleScreen {
-    display: none;
+/* The carnival scene uses the same guaranteed root-level image on every device. */
+.riddle-screen {
     position: fixed;
     inset: 0;
-    background: black;
-    color: #ffb7c5;
-    z-index: 10000;
-    justify-content: center;
+    z-index: 9000;
+    display: flex;
     align-items: center;
-    padding: 20px;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 28px 20px;
+    color: #f2e8e8;
+    background: #000;
+    isolation: isolate;
 }
 
-#riddleBox {
+/* Separate image layer: brightness affects the artwork, not the riddle text. */
+.riddle-screen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: url("carnival.jpg");
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: brightness(1.48) contrast(1.08);
+}
+
+/* Keep the words readable while allowing the carnival artwork to show through. */
+.riddle-screen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(0, 0, 0, .12), rgba(0, 0, 0, .025) 50%, rgba(0, 0, 0, .12)),
+        linear-gradient(rgba(0, 0, 0, .12), rgba(0, 0, 0, .26)),
+        radial-gradient(ellipse at center, transparent 36%, rgba(0, 0, 0, .48) 100%);
+}
+.riddle-box {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 850px);
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
     text-align: center;
-    max-width: 90vw;
-    font-size: 1rem;
 }
+.riddle-warning {
+    margin: 0 0 24px;
+    color: #f2c0c5;
+    font: bold clamp(1.25rem, 3.3vw, 2.05rem)/1.25 Georgia, "Times New Roman", serif;
+    letter-spacing: .005em;
+    text-shadow: 0 2px 8px #000, 0 0 18px rgba(0, 0, 0, .9);
+}
+.riddle-intro {
+    margin: 0 auto 18px;
+    color: #e2dada;
+    font: 1rem/1.55 Georgia, "Times New Roman", serif;
+    text-shadow: 0 2px 5px #000;
+}
+.riddle-verse {
+    margin: 18px 0;
+    color: #f4eeee;
+    font: 1.02rem/1.65 Georgia, "Times New Roman", serif;
+    text-shadow: 0 2px 6px #000;
+}
+.riddle-question {
+    margin: 18px 0 0;
+    color: #f0c0c5;
+    font: bold .88rem Georgia, "Times New Roman", serif;
+    letter-spacing: .14em;
+    text-shadow: 0 2px 5px #000;
+}
+.riddle-form { display: flex; gap: 8px; max-width: 500px; margin: 17px auto 0; }
+.riddle-form input { flex: 1; background: rgba(0, 0, 0, .78); }
+.riddle-form .btn { min-width: 140px; }
+.riddle-result {
+    max-width: 780px;
+    margin: 20px auto 0;
+    color: var(--blood);
+    font: bold .98rem/1.65 Georgia, "Times New Roman", serif;
+    text-shadow: 0 2px 6px #000;
+}
+.riddle-error-line { display: block; color: #ff3038; }
+.riddle-error-line.shake { animation: subtleShake .42s ease-in-out 7; }
+.riddle-prophecy-line { display: block; margin-top: 14px; color: #f0c2c6; }
 
-#riddleBox h2 {
-    margin-bottom: 10px;
-}
-
-#riddleInput {
-    width: 90%;
-    padding: 10px;
-    margin-top: 15px;
-    font-size: 1rem;
-}
-
-#riddleSubmit {
-    margin-top: 10px;
-    padding: 10px 20px;
-}
-#riddleResult {
-    display: none;
-    margin-top: 15px;
-    color: #ff4b4b;
-    font-weight: bold;
-    white-space: pre-line;
-}
-
-#riddleResult {
-    white-space: pre-line;
-}
 @keyframes subtleShake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-2px); }
-    50% { transform: translateX(2px); }
-    75% { transform: translateX(-2px); }
-    100% { transform: translateX(0); }
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-3px); }
+    40%, 80% { transform: translateX(3px); }
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (max-width: 760px) {
+    body { padding: 13px 14px 22px; }
+    .topbar { margin-bottom: 18px; }
+    .panel { padding: 25px 15px; }
+    .setup-form { display: grid; grid-template-columns: 1fr 1fr; }
+    .setup-form input { grid-column: 1 / -1; max-width: none; }
+    .setup-form select { min-width: 0; }
+    .setup-form .primary-btn { grid-column: 1 / -1; }
+    .game-hud { display: grid; grid-template-columns: repeat(2, 1fr); }
+    .stat-card { min-height: 52px; }
+    #gameCanvas { height: min(58vh, 470px); min-height: 300px; }
+    .game-bottom-row { align-items: flex-start; flex-direction: column; }
+    .game-actions { width: 100%; }
+    .game-actions .btn { flex: 1; }
+    .riddle-screen {
+        min-height: 100svh;
+        padding: 22px 14px;
+    }
+
+    /* Cover crops the landscape image into the phone's tall viewport. */
+    .riddle-screen::before {
+        /* Prefer the portrait crop; the landscape file remains as an automatic fallback. */
+        background-image: url("carnival-mobile.jpg"), url("carnival.jpg");
+        background-position: center center, center 52%;
+        background-size: auto 116%, cover;
+        background-repeat: no-repeat, no-repeat;
+        filter: brightness(1.78) contrast(1.10);
+    }
+
+    .riddle-screen::after {
+        background:
+            linear-gradient(90deg, rgba(0, 0, 0, .08), rgba(0, 0, 0, .015) 50%, rgba(0, 0, 0, .08)),
+            linear-gradient(rgba(0, 0, 0, .08), rgba(0, 0, 0, .22)),
+            radial-gradient(ellipse at center, transparent 42%, rgba(0, 0, 0, .36) 100%);
+    }
+    .riddle-box { padding: 10px 2px; }
+    .riddle-form { flex-direction: column; max-width: 420px; }
+    .riddle-form .btn { width: 100%; }
+}
+
+@media (max-width: 420px) {
+    .leaderboard-heading { align-items: flex-start; flex-direction: column; gap: 4px; }
+    .game-actions .btn { padding: 0 10px; }
+    #gameCanvas { min-height: 270px; }
+    .riddle-warning { font-size: 1.17rem; }
+    .riddle-intro { font-size: .92rem; }
+    .riddle-verse { font-size: .94rem; }
+    .riddle-result { font-size: .88rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    .riddle-error-line.shake { animation: none !important; }
 }
