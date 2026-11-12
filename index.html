@@ -3,77 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>𝓙𝓮𝓷𝓲'𝓼 𝓟𝓸𝓹 𝓖𝓪𝓶𝓮</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#050404">
+    <meta name="description" content="Jeni's Pop Game — a 200-second arcade challenge. How high can you score?">
+    <title>Jeni's Pop Game</title>
+    <link rel="stylesheet" href="style.css?v=carnival-mobile-visibility-fix-2026-11-12c">
 </head>
 <body>
-    <div id="game">
-        <h1>𝓙𝓮𝓷𝓲'𝓼 𝓟𝓸𝓹 𝓖𝓪𝓶𝓮 - try to pass past score 10</h1>
-        <input type="text" id="usernameInput" placeholder="Enter your username" class="btn">
-        <button id="startGameButton" class="btn">Start Game</button>
-        <canvas id="gameCanvas" width="800" height="600" style="display:none;"></canvas>
-        <div id="scoreboard" style="display:none;">
-            <h2>Scoreboard</h2>
-            <div id="scores"></div>
+    <main id="game" class="game-shell">
+        <header class="topbar">
+            <a class="brand" href="https://jenifaurora.github.io/" aria-label="Back to Jenifaurora">jenifaurora<span>.</span></a>
+            <a class="back-link" href="https://jenifaurora.github.io/">Back to website <span aria-hidden="true">↗</span></a>
+        </header>
+
+        <section id="startPanel" class="panel start-panel">
+            <h1>Jeni's <span>Pop Game</span></h1>
+            <p class="lead">200 seconds. One target. How high can you score?</p>
+            <p class="intro-copy">Hit the moving target, collect glowing bonuses, and keep your eyes open.</p>
+
+            <form id="setupForm" class="setup-form">
+                <label class="sr-only" for="usernameInput">Your player name</label>
+                <input type="text" id="usernameInput" name="username" maxlength="18" autocomplete="nickname" placeholder="Enter your username" required>
+
+                <label class="sr-only" for="difficultySelect">Choose difficulty</label>
+                <select id="difficultySelect" name="difficulty" aria-label="Choose difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="Hard">Hard</option>
+                </select>
+                <button type="submit" id="startGameButton" class="btn primary-btn">Start the game <span aria-hidden="true">→</span></button>
+            </form>
+            <p id="startError" class="form-message" role="status" aria-live="polite"></p>
+
+            <section class="leaderboard" aria-labelledby="leaderboardTitle">
+                <div class="leaderboard-heading">
+                    <h2 id="leaderboardTitle">Personal bests</h2>
+                    <span>saved on this device</span>
+                </div>
+                <ol id="highScoreList" class="high-score-list">
+                    <li class="empty-score">Your first run is waiting.</li>
+                </ol>
+            </section>
+        </section>
+
+        <section id="playPanel" class="play-panel" hidden>
+            <div class="game-hud" aria-live="polite">
+                <div class="stat-card"><span class="stat-label">SCORE</span><strong id="scoreValue">0</strong></div>
+                <div class="stat-card timer-card"><span class="stat-label">TIME LEFT</span><strong id="timerValue">200<span>s</span></strong></div>
+                <div class="stat-card"><span class="stat-label">COMBO</span><strong id="comboValue">—</strong></div>
+                <div class="stat-card"><span class="stat-label">BEST</span><strong id="bestValue">0</strong></div>
+            </div>
+
+            <div class="canvas-frame">
+                <canvas id="gameCanvas" width="960" height="540" aria-label="Game area. Tap or click the moving red target and glowing bonus orbs."></canvas>
+                <div id="pausedOverlay" class="paused-overlay" hidden>
+                    <div class="pause-card">
+                        <h2>Paused</h2>
+                        <button type="button" id="resumeOverlayButton" class="btn primary-btn">Resume game</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-bottom-row">
+                <p id="gameStatus" class="game-status" aria-live="polite">Tap the red target to score. Keep the streak going.</p>
+                <div class="game-actions">
+                    <button type="button" id="pauseGameButton" class="btn secondary-btn">Pause</button>
+                    <button type="button" id="restartButton" class="btn secondary-btn">Restart</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="gameOverPanel" class="panel game-over-panel" hidden>
+            <h2 id="gameOverTitle">Game over<span>.</span></h2>
+            <p id="gameOverMessage" class="lead">Nice run.</p>
+            <div class="final-score-wrap">
+                <span>YOUR SCORE</span>
+                <strong id="finalScore">0</strong>
+                <p id="personalBestMessage"></p>
+            </div>
+            <button type="button" id="playAgainButton" class="btn primary-btn">Play again <span aria-hidden="true">↻</span></button>
+            <button type="button" id="backToMenuButton" class="text-button menu-button">Back to menu</button>
+        </section>
+    </main>
+
+    <video id="jumpscareVideo" playsinline webkit-playsinline preload="auto" aria-label="Game cutscene">
+        <source src="jumpscare/foxy.mp4" type="video/mp4">
+    </video>
+
+    <section id="riddleScreen" class="riddle-screen" role="dialog" aria-modal="true" aria-labelledby="riddleTitle" hidden>
+        <div id="riddleBox" class="riddle-box">
+            <h2 id="riddleTitle" class="riddle-warning">☠ You touched the Poison Orb. You got 10 minutes ☠</h2>
+            <p class="riddle-intro">In the age of shattered crowns,<br>when knight and shadow walk as one,<br>a prophecy was carved into stone.</p>
+            <p class="riddle-verse"><strong>
+                I am born when steel meets fate,<br>
+                I die when courage breaks.<br>
+                Kings fear me. Beggars wield me.<br>
+                I travel without feet,<br>
+                strike without hands,<br>
+                and only the worthy may command me.
+            </strong></p>
+            <p class="riddle-question">WHAT AM I?</p>
+            <form id="riddleForm" class="riddle-form">
+                <label class="sr-only" for="riddleInput">Your answer</label>
+                <input id="riddleInput" name="answer" placeholder="Speak, mortal..." autocomplete="off" required>
+                <button type="submit" id="riddleSubmit" class="btn primary-btn">Submit Answer</button>
+            </form>
+            <p id="riddleResult" class="riddle-result" role="status" aria-live="polite" hidden>
+                <span id="riddleErrorLine" class="riddle-error-line"></span>
+                <span id="riddleProphecyLine" class="riddle-prophecy-line"></span>
+            </p>
         </div>
-        <div id="score">Score: 0</div>
-        <div id="timer">Time Left: 200s</div>
-        <button id="restartButton" class="btn" style="display:none;">Restart Game</button>
-        <button id="playButton" class="btn">Play Music</button>
-        <button id="pauseButton" class="btn">Pause Music</button>
-        <a href="https://jenifaurora.github.io" class="btn">Back to Website</a>
-    </div>
+    </section>
 
-<!-- Jumpscare video -->
-<video id="jumpscareVideo" playsinline webkit-playsinline preload="auto">
-    <source src="jumpscare/foxy.mp4" type="video/mp4">
-</video>
-
-<!-- Riddle Screen -->
-<div id="riddleScreen">
-    <div id="riddleBox">
-        <h2>☠ You touched the Poison Orb. You got 10 minutes ☠</h2>
-
-        <p>
-        In the age of shattered crowns,<br>
-        when knight and shadow walk as one,<br>
-        a prophecy was carved into stone.
-        </p>
-
-        <p>
-        <strong>
-        I am born when steel meets fate,<br>
-        I die when courage breaks.<br>
-        Kings fear me. Beggars wield me.<br>
-        I travel without feet,<br>
-        strike without hands,<br>
-        and only the worthy may command me.
-        </strong>
-        </p>
-
-        <p><strong>WHAT AM I?</strong></p>
-
-        <input id="riddleInput" placeholder="Speak, mortal..." />
-
-        <button id="riddleSubmit">Submit Answer</button>
-
-        <p id="riddleResult"></p>
-    </div>
-</div>
-    
-    <!-- Music audio -->
-    <audio id="lofiAudio" loop>
-        <source src="audio/lofi.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-    
-    <!-- Hit sound audio -->
     <audio id="hitSound" src="sounds/hit.mp3" preload="auto"></audio>
-    
-    <!-- Jumpscare sound -->
-    <audio id="jumpscareSound" src="sounds/jumpscare.mp3" preload="auto"></audio>
     <audio id="whisperAudio" src="sounds/whisper.mp3" preload="auto" loop></audio>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=carnival-retro-2026-11-12" defer></script>
 </body>
 </html>
